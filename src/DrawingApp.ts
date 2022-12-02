@@ -260,9 +260,24 @@ export class DrawingApp extends gfx.GfxApp
             // Then, you should create a new billboard at the sky intersection point.  You should also set the
             // draw state to correct mode, similar to the code blocks above for the ground and billboard.
 
+            const skyIntersection = ray.intersectsMesh(this.skyBox);
 
             // TO DO: ADD YOUR CODE HERE
+            if (skyIntersection) {
+                // Set the current draw state
+                this.drawState = DrawState.DRAWING_SKY;
 
+                // Create a new  and add it to the scene
+                this.currentBillboard = new Billboard(
+                    deviceCoords, 
+                    skyIntersection, 
+                    gfx.Color.createFromString(this.crayonColor), 
+                    this.strokeWidth
+                );
+                this.scene.add(this.currentBillboard);
+
+                return;
+            }
             
         }
     }

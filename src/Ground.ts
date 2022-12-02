@@ -78,9 +78,9 @@ export class Ground extends gfx.Mesh
         // through these two points on the ground.  The plane should also have a normal 
         // vector that is parallel to the ground plane.
 
-
-
         // TO DO: ADD YOUR CODE HERE
+        const planeNormal = groundStartPoint.cross(groundEndPoint);
+        const plane = new gfx.Plane(groundStartPoint, planeNormal);
 
 
 
@@ -90,7 +90,11 @@ export class Ground extends gfx.Mesh
         // You will need to create a gfx.Ray as discussed in class.  Youu can use the
         // ray.intersectPlane() method to check for an intersection with a gfx.Plane.
 
-
+        // const ray = new gfx.Ray();
+        // for (let i = 0; i < screenPath.length; i++) {
+        //     const point = screenPath[i];
+        //     plane.project(point);
+        // }
 
         // TO DO: ADD YOUR CODE HERE
 

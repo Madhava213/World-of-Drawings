@@ -211,9 +211,33 @@ export class Billboard extends gfx.Transform3
        
 
         // TO DO: ADD YOUR CODE HERE
+        const projectionPlaneNormal = new gfx.Vector3(0, 0, -1);
+        projectionPlaneNormal.rotate(camera.rotation);
+        const projectionPlane = new gfx.Plane(this.startPoint, projectionPlaneNormal);
 
+        const cameraOnGround = new gfx.Vector3(camera.position.x, 0, camera.position.z);
+        this.lookAt(cameraOnGround);
+        const rotationInverse = this.rotation.inverse();
 
-        
+        const point = new gfx.Vector2(this.vertices[0].x, this.vertices[0].y);
+        const ray = new gfx.Ray();
+        for(let i=0; i < this.vertices.length; i++)
+        {
+            point.set(this.vertices[i].x, this.vertices[i].y);
+            ray.setPickRay(point, camera);
+
+            const intersection = ray.intersectsPlane(projectionPlane);
+            if(intersection)
+            {
+                this.vertices[i].copy(intersection);
+                this.vertices[i].subtract(this.position);
+                this.vertices[i].rotate(rotationInverse);
+                this.vertices[i].add(ray.direction);
+            }
+        }
+
+        // Assign the new mesh vertices
+        this.mesh.setVertices(this.vertices);
     }
 
     private resetBillboard(): void
