@@ -160,8 +160,16 @@ export class DrawingApp extends gfx.GfxApp
             if(this.cameraControls.hasMoved)
             {
 
-
                 // TO DO: ADD YOUR CODE HERE
+                const ray = new gfx.Ray();
+                ray.set(this.camera.position, gfx.Vector3.DOWN);
+                const groundPoint = ray.intersectsMesh(this.ground);
+                if (groundPoint) {
+                    const height = this.camera.position.distanceTo(groundPoint);
+                    if (height != this.camera.position.y) {
+                        this.camera.position.y += this.cameraHeight - height;
+                    }
+                }
 
 
 

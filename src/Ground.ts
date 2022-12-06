@@ -79,7 +79,9 @@ export class Ground extends gfx.Mesh
         // vector that is parallel to the ground plane.
 
         // TO DO: ADD YOUR CODE HERE
-        const planeNormal = groundStartPoint.cross(groundEndPoint);
+        const startEndVector = gfx.Vector3.subtract(groundEndPoint, groundStartPoint);
+        const planeNormal = gfx.Vector3.UP.cross(startEndVector);
+        planeNormal.normalize();
         const plane = new gfx.Plane(groundStartPoint, planeNormal);
 
 
@@ -90,11 +92,16 @@ export class Ground extends gfx.Mesh
         // You will need to create a gfx.Ray as discussed in class.  Youu can use the
         // ray.intersectPlane() method to check for an intersection with a gfx.Plane.
 
-        // const ray = new gfx.Ray();
-        // for (let i = 0; i < screenPath.length; i++) {
-        //     const point = screenPath[i];
-        //     plane.project(point);
-        // }
+        const ray = new gfx.Ray();
+        const newPath = []
+        for (let i = 0; i < screenPath.length; i++) {
+            const point = screenPath[i];
+            ray.setPickRay(point, camera);
+            const newPoint = ray.intersectsPlane(plane);
+            if (newPoint) {
+                newPath.push(newPoint);
+            }
+        }
 
         // TO DO: ADD YOUR CODE HERE
 
@@ -108,7 +115,16 @@ export class Ground extends gfx.Mesh
 
 
         // TO DO: ADD YOUR CODE HERE
-
+        for (let i = 0; i < this.vertices.length; i++) {
+            const planePoint = plane.project(this.vertices[i]);
+            const h = this.computeH(planePoint,newPath,plane)
+            
+            if (h != 0) {
+                const d = gfx.Vector3.distanceBetween(planePoint, this.vertices[i]);
+                const wd = Math.max(0,(1-Math.pow(d/5,2)))
+                this.vertices[i].y = ((1 - wd) * this.vertices[i].y) + (wd * h); 
+            }
+        }
 
 
         // Finally, the new vertex positions have been computed, we need to assign
